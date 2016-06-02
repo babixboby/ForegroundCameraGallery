@@ -43,7 +43,8 @@
            android:layout_alignParentLeft="true"
            android:layout_margin="10dp"
            android:text="Flash" />
-      </RelativeLayout>     
+      </RelativeLayout>   
+   </RelativeLayout>  
 
     <RelativeLayout
         android:id="@+id/viewfinderArea"
