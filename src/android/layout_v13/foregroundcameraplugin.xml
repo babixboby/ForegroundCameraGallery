@@ -54,4 +54,18 @@
             android:layout_margin="10dp"
             android:gravity="center" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/viewfinderArea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="125dp">
+
+        <ImageView
+            android:id="@+id/viewfinder"
+            android:layout_height="72dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/viewfinder"
+            android:layout_width="72dp" />
+
+    </RelativeLayout>
 </RelativeLayout>
