@@ -31,7 +31,7 @@
       <ZoomControls
             android:id="@+id/zoomControls1"
             android:layout_width="0dp"
-            android:layout_height="dp" />
+            android:layout_height="0dp" />
       <Switch
            android:id="@+id/switch1"
            android:layout_width="0dp"
