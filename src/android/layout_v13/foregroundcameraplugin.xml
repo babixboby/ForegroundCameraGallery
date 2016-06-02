@@ -24,7 +24,15 @@
             android:background="@drawable/btn_shot"
             android:layout_width="66dp"
             android:layout_marginBottom="20dp" />
-
+            
+      </RelativeLayout>
+      
+      <RelativeLayout
+        android:id="@+id/viewfinderArea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true">
+         
        <ToggleButton
            android:id="@+id/switch1"
            android:layout_width="wrap_content"
@@ -58,7 +66,7 @@
         android:id="@+id/viewfinderArea"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="125dp">
+        android:layout_alignParentBottom="true">
 
         <ImageView
             android:id="@+id/viewfinder"
