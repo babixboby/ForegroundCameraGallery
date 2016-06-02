@@ -8,50 +8,48 @@
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="match_parent" >
-
     </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-        
-        <ImageButton
+   <RelativeLayout android:layout_width="match_parent" android:layout_height="76dp" android:layout_alignParentBottom="true" >
+      <ImageButton
             android:id="@+id/button_capture"
             android:layout_height="66dp"
-            android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
             android:background="@drawable/btn_shot"
-            android:layout_width="66dp"
-            android:layout_marginBottom="20dp" />
-
-       <Switch
-           android:id="@+id/switch1"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_alignBottom="@+id/button_cancel"
-           android:layout_alignParentLeft="true"
-           android:layout_below="@+id/button_capture"
-           android:layout_margin="10dp"
-           android:text="Flash" />
-       
-        <ImageButton
+            android:layout_width="66dp" />
+   </RelativeLayout>
+   
+   <RelativeLayout android:layout_width="match_parent" android:layout_height="66dp" android:layout_alignParentTop="true" >
+      <ImageButton
             android:id="@+id/button_cancel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="66dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/button_capture"
-            android:layout_gravity="bottom|right"
-            android:layout_toRightOf="@+id/switch1"
-            android:layout_margin="10dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
-
-        <ZoomControls
+            android:background="@drawable/btn_close"
+            android:layout_width="66dp" />
+            
+      <ZoomControls
             android:id="@+id/zoomControls1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/button_cancel"
-            android:layout_margin="10dp"
-            android:gravity="center" />
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+      <Switch
+           android:id="@+id/switch1"
+           android:layout_width="0dp"
+           android:layout_height="0dp" />
+   </RelativeLayout>  
+
+    <RelativeLayout
+        android:id="@+id/viewfinderArea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/viewfinder"
+            android:layout_height="72dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/viewfinder"
+            android:layout_width="72dp" />
+
     </RelativeLayout>
 </RelativeLayout>
