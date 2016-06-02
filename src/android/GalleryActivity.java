@@ -100,8 +100,8 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 	 */
 	private void setupViews() {
 		sdcardImages = (GridView) findViewById(getApplication().getResources().getIdentifier("sdcard", "id", getPackageName()));
-		// sdcardImages.setNumColumns(display.getWidth() / 95);
-		sdcardImages.setNumColumns(3); // DSS
+		sdcardImages.setNumColumns(Math.floor(display.getWidth() / 95));
+	//	sdcardImages.setNumColumns(3); // DSS
 		sdcardImages.setClipToPadding(false);
 		sdcardImages.setOnItemClickListener(GalleryActivity.this);
 		imageAdapter = new ImageAdapter(getApplicationContext());
@@ -243,7 +243,7 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 			if ((result != null) && (result == -1)) {
 				AlertDialog.Builder dialog = new AlertDialog.Builder(sdcardImages.getContext());
 				dialog.setTitle("Alerta");
-				dialog.setMessage("No se encontrarón imagenes!");
+				dialog.setMessage("No se encontrarÃ³n imagenes!");
 				dialog.setNeutralButton("OK", new OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
