@@ -107,7 +107,7 @@ Point size = new Point();
 display.getSize(size);
 int width = size.x;
 int height = size.y;	
-		sdcardImages.setNumColumns(Math.floor(width / 95));
+		sdcardImages.setNumColumns(width / 95);
 	//	sdcardImages.setNumColumns(3); // DSS
 		sdcardImages.setClipToPadding(false);
 		sdcardImages.setOnItemClickListener(GalleryActivity.this);
