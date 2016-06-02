@@ -43,6 +43,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.view.Display;
+
 
 /**
  * Class to search images from the memory card. Based on
@@ -100,7 +102,12 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 	 */
 	private void setupViews() {
 		sdcardImages = (GridView) findViewById(getApplication().getResources().getIdentifier("sdcard", "id", getPackageName()));
-		sdcardImages.setNumColumns(Math.floor(display.getWidth() / 95));
+	Display display = getWindowManager().getDefaultDisplay();
+Point size = new Point();
+display.getSize(size);
+int width = size.x;
+int height = size.y;	
+		sdcardImages.setNumColumns(Math.floor(width / 95));
 	//	sdcardImages.setNumColumns(3); // DSS
 		sdcardImages.setClipToPadding(false);
 		sdcardImages.setOnItemClickListener(GalleryActivity.this);
