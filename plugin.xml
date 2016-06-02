@@ -73,6 +73,9 @@
         
         <source-file src="src/android/foregroundcameraplugin.xml" target-dir="res/layout" />
         <source-file src="src/android/gallery.xml" target-dir="res/layout" />
+        <source-file src="res/btn_shot.png" target-dir="res/drawable" />
+        <source-file src="res/btn_close.png" target-dir="res/drawable" />
+        <source-file src="res/viewfinder.png" target-dir="res/drawable" />
         <source-file src="src/android/layout_v13/foregroundcameraplugin.xml" target-dir="res/layout-v13" />
         <source-file src="src/android/layout_v13/foregroundcameraplugin.xml" target-dir="res/layout-v12" />
         <source-file src="src/android/layout_v13/foregroundcameraplugin.xml" target-dir="res/layout-v11" />
