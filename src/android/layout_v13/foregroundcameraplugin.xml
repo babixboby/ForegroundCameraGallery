@@ -10,11 +10,12 @@
         android:layout_height="match_parent" >
     </FrameLayout>
 
-   <RelativeLayout android:layout_width="match_parent" android:layout_height="66dp" android:layout_alignParentBottom="true" >
+   <RelativeLayout android:layout_width="match_parent" android:layout_height="76dp" android:layout_alignParentBottom="true" >
       <ImageButton
             android:id="@+id/button_capture"
             android:layout_height="66dp"
             android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
             android:background="@drawable/btn_shot"
             android:layout_width="66dp" />
    </RelativeLayout>
@@ -26,6 +27,15 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/btn_close"
             android:layout_width="66dp" />
+            
+      <ZoomControls
+            android:id="@+id/zoomControls1"
+            android:layout_width="0dp"
+            android:layout_height="dp" />
+      <Switch
+           android:id="@+id/switch1"
+           android:layout_width="0dp"
+           android:layout_height="0dp" />
    </RelativeLayout>  
 
     <RelativeLayout
