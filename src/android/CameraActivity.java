@@ -81,7 +81,7 @@ public class CameraActivity extends Activity {
 		params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
 		mCamera.setParameters(params);
-mCamera.setDisplayOrientation(90);
+
 		// Create a Preview and set it as the content of activity.
 		mPreview = new CameraPreview(this, mCamera);
 
@@ -124,12 +124,50 @@ mCamera.setDisplayOrientation(90);
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		if (mOrientationEventListener == null) {
+			mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+
+				@Override
+				public void onOrientationChanged(int orientation) {
+
+					// determine our orientation based on sensor response
+					int lastOrientation = mOrientation;
+
+					if (orientation >= 315 || orientation < 45) {
+						if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
+							mOrientation = ORIENTATION_PORTRAIT_NORMAL;
+						}
+					} else if (orientation < 315 && orientation >= 225) {
+						if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
+							mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
+						}
+					} else if (orientation < 225 && orientation >= 135) {
+						if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
+							mOrientation = ORIENTATION_PORTRAIT_INVERTED;
+						}
+					} else { // orientation <135 && orientation > 45
+						if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
+							mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
+						}
+					}
+
+					if (lastOrientation != mOrientation) {
+						changeRotation(mOrientation, lastOrientation);
+					}
+				}
+			};
+		}
+		if (mOrientationEventListener.canDetectOrientation()) {
+			mOrientationEventListener.enable();
+		}
 	}
 
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		mOrientationEventListener.disable();
 	}
 
 	@Override
@@ -158,7 +196,47 @@ mCamera.setDisplayOrientation(90);
 		}
 		return c; // returns null if camera is unavailable
 	}
-
+/**
+	 * Performs required action to accommodate new orientation
+	 * 
+	 * @param orientation
+	 * @param lastOrientation
+	 */
+	private void changeRotation(int orientation, int lastOrientation) {
+		final Camera.Parameters params = mCamera.getParameters();
+		switch (orientation) {
+		case ORIENTATION_PORTRAIT_NORMAL:
+			// mSnapButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_camera,
+			// 270));
+			// mBackButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_revert,
+			// 270));
+			params.setRotation(90);
+			Log.v("CameraActivity", "Orientation = 90");
+			break;
+		case ORIENTATION_LANDSCAPE_NORMAL:
+			// mSnapButton.setImageResource(android.R.drawable.ic_menu_camera);
+			// mBackButton.setImageResource(android.R.drawable.ic_menu_revert);
+			params.setRotation(0);
+			Log.v("CameraActivity", "Orientation = 0");
+			break;
+		case ORIENTATION_PORTRAIT_INVERTED:
+			// mSnapButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_camera,
+			// 90));
+			// mBackButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_revert,
+			// 90));
+			params.setRotation(270);
+			Log.v("CameraActivity", "Orientation = 270");
+			break;
+		case ORIENTATION_LANDSCAPE_INVERTED:
+			// mSnapButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_camera,
+			// 180));
+			// mBackButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_revert,
+			// 180));
+			params.setRotation(180);
+			Log.v("CameraActivity", "Orientation = 180");
+			break;
+		}
+	}
 	private PictureCallback mPicture = new PictureCallback() {
 
 		public void onPictureTaken(byte[] data, Camera camera) {
@@ -180,7 +258,23 @@ mCamera.setDisplayOrientation(90);
 			ExifInterface exif;
 			try {
 				exif = new ExifInterface(pictureFile.getAbsolutePath());
-				exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_90));
+				switch (mOrientation) {
+				case ORIENTATION_PORTRAIT_NORMAL:
+					// image.put(Media.ORIENTATION, 90);
+					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_90));
+					break;
+				case ORIENTATION_LANDSCAPE_NORMAL:
+					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL));
+					break;
+				case ORIENTATION_PORTRAIT_INVERTED:
+					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_270));
+					break;
+				case ORIENTATION_LANDSCAPE_INVERTED:
+					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_180));
+					break;
+				}
+				exif.saveAttributes();			
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
