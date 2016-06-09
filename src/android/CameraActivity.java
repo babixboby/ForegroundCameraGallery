@@ -41,7 +41,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
-
+import android.view.Display;
 /**
  * Camera Activity Class. Configures Android camera to take picture and show it.
  */
@@ -86,7 +86,9 @@ public class CameraActivity extends Activity {
 			}
 		}
 
-		params.setPictureSize(w, h);
+		Display display = getWindowManager().getDefaultDisplay();
+		//params.setPictureSize(w, h);
+		params.setPictureSize(display.getWidth(), display.getWidth());
 		params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 
 		mCamera.setParameters(params);
@@ -95,6 +97,8 @@ public class CameraActivity extends Activity {
 		mPreview = new CameraPreview(this, mCamera);
 
 		FrameLayout preview = (FrameLayout) findViewById(getResources().getIdentifier("camera_preview", "id", getPackageName()));
+		preview.setHeight(display.getWidth());
+		preview.setWidth(display.getWidth());
 		preview.addView(mPreview);
 		
 		// Add a listener to the Capture button
