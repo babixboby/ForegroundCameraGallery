@@ -81,7 +81,7 @@ public class CameraActivity extends Activity {
 		params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
 		mCamera.setParameters(params);
-
+mCamera.setDisplayOrientation(90);
 		// Create a Preview and set it as the content of activity.
 		mPreview = new CameraPreview(this, mCamera);
 
