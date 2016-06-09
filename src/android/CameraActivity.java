@@ -98,7 +98,7 @@ public class CameraActivity extends Activity {
 		mPreview = new CameraPreview(this, mCamera);
 
 		FrameLayout preview = (FrameLayout) findViewById(getResources().getIdentifier("camera_preview", "id", getPackageName()));
-		LayoutParams paramx = preview.getLayoutParams();
+	FrameLayout.LayoutParams paramx = preview.getLayoutParams();
 		// Changes the height and width to the specified *pixels*
 		paramx.height = display.getWidth();
 		paramx.width = display.getWidth();
