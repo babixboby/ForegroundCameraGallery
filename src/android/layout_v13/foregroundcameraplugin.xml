@@ -6,8 +6,9 @@
 
     <FrameLayout
         android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent" >
+        android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app: layout_aspectRatio="100%" >
     </FrameLayout>
 
    <RelativeLayout android:layout_width="match_parent" android:layout_height="76dp" android:layout_alignParentBottom="true" >
