@@ -181,7 +181,6 @@ public class CameraActivity extends Activity {
 			try {
 				exif = new ExifInterface(pictureFile.getAbsolutePath());
 				exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_90));
-				exif.saveAttributes();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
