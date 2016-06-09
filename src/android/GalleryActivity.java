@@ -104,8 +104,8 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 		sdcardImages = (GridView) findViewById(getApplication().getResources().getIdentifier("sdcard", "id", getPackageName()));
 	Display display = getWindowManager().getDefaultDisplay();
 	
-		sdcardImages.setNumColumns(display.getWidth() / 170);
-	//	sdcardImages.setNumColumns(3); // DSS
+	//	sdcardImages.setNumColumns(display.getWidth() / 170);
+		sdcardImages.setNumColumns(5); // DSS
 		sdcardImages.setClipToPadding(false);
 		sdcardImages.setOnItemClickListener(GalleryActivity.this);
 		imageAdapter = new ImageAdapter(getApplicationContext());
