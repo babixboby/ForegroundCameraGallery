@@ -63,6 +63,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
 		// start preview with new settings
 		try {
+			((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 			Display display = getWindowManager().getDefaultDisplay();
 			Camera.Parameters parameters = mCamera.getParameters();
 			parameters.setPreviewSize(display.getWidth(), display.getHeight());
