@@ -6,8 +6,8 @@
 
     <FrameLayout
         android:id="@+id/camera_preview"
-        android:layout_width="200dp"
-         android:layout_height="200dp">
+        android:layout_width="fill_parent"
+         android:layout_height="fill_parent">
     </FrameLayout>
 
    <RelativeLayout android:layout_width="match_parent" android:layout_height="76dp" android:layout_alignParentBottom="true" >
