@@ -97,8 +97,12 @@ public class CameraActivity extends Activity {
 		mPreview = new CameraPreview(this, mCamera);
 
 		FrameLayout preview = (FrameLayout) findViewById(getResources().getIdentifier("camera_preview", "id", getPackageName()));
-		preview.setHeight(display.getWidth());
-		preview.setWidth(display.getWidth());
+		LayoutParams paramx = preview.getLayoutParams();
+		// Changes the height and width to the specified *pixels*
+		paramx.height = display.getWidth();
+		paramx.width = display.getWidth();
+		preview.setLayoutParams(paramx);
+
 		preview.addView(mPreview);
 		
 		// Add a listener to the Capture button
