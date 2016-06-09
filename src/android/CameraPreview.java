@@ -9,6 +9,7 @@ import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Display;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder mHolder;
@@ -60,11 +61,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
 		// start preview with new settings
 		try {
-			//Camera.Parameters parameters = mCamera.getParameters();
-			//parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-			//mCamera.setParameters(parameters);
-			//mCamera.setDisplayOrientation(90);
-		//	mCamera.setPreviewDisplay(mHolder);
+			Display display = getWindowManager().getDefaultDisplay();
+			Camera.Parameters parameters = mCamera.getParameters();
+			parameters.setPreviewSize(display.getWidth(), display.getHeight());
+			mCamera.setParameters(parameters);
+			mCamera.setDisplayOrientation(90);
+			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
 
 		} catch (Exception e) {
