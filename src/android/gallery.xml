@@ -10,7 +10,7 @@
         android:id="@+id/sdcard"
         android:layout_width="fill_parent" 
         android:layout_height="fill_parent"
-        android:verticalSpacing="10dp"
+        android:verticalSpacing="0dp"
         android:horizontalSpacing="10dp" 
         android:stretchMode="columnWidth"
         android:gravity="center" />
