@@ -181,6 +181,7 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 			Bitmap bitmap = null;
 			Bitmap newBitmap = null;
 			sequencialImageID = new HashMap<Integer, Integer>();
+			Display display = getWindowManager().getDefaultDisplay();
 
 			// Set up an array of the Thumbnail Image ID column we want
 			String[] projection = { MediaStore.Images.Media._ID };
@@ -204,7 +205,7 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 				bitmap = MediaStore.Images.Thumbnails.getThumbnail(getContentResolver(), imageID, MediaStore.Images.Thumbnails.MICRO_KIND, null);
 				if (bitmap != null) {
 					try {
-						newBitmap = Bitmap.createScaledBitmap(bitmap, 170, 170, true);
+						newBitmap = Bitmap.createScaledBitmap(bitmap, display.getWidth()/4, display.getWidth()/4, true);
 						bitmap.recycle();
 						bitmap = null;
 						System.gc();
