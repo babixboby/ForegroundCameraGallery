@@ -1,6 +1,7 @@
 package com.tuxpan.foregroundcameragalleryplugin;
 
 import java.util.List;
+import java.io.IOException;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -14,6 +15,7 @@ import android.view.SurfaceView;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
+	private final String TAG = "Preview";
 
 	public CameraPreview(Context context, Camera camera) {
 		super(context);
