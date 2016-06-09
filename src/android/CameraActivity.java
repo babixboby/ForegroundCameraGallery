@@ -89,7 +89,6 @@ public class CameraActivity extends Activity {
 
 		Display display = getWindowManager().getDefaultDisplay();
 		params.setPictureSize(w, h);
-	//	params.setPictureSize(display.getWidth(), display.getWidth());
 		params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 
 		mCamera.setParameters(params);
@@ -98,12 +97,7 @@ public class CameraActivity extends Activity {
 		mPreview = new CameraPreview(this, mCamera);
 
 		FrameLayout preview = (FrameLayout) findViewById(getResources().getIdentifier("camera_preview", "id", getPackageName()));
-	FrameLayout.LayoutParams paramx = (FrameLayout.LayoutParams) preview.getLayoutParams();
 
-		// Changes the height and width to the specified *pixels*
-		paramx.height = display.getWidth();
-		paramx.width = display.getWidth();
-		preview.setLayoutParams(paramx);
 
 		preview.addView(mPreview);
 		
