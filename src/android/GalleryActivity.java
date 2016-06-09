@@ -298,7 +298,7 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
 				imageView = (ImageView) convertView;
 			}
 			imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-			imageView.setPadding(8, 8, 8, 8);
+			imageView.setPadding(0, 0, 0, 0);
 			imageView.setImageBitmap(photos.get(position).getBitmap());
 			return imageView;
 		}
