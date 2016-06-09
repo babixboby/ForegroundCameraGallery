@@ -88,8 +88,8 @@ public class CameraActivity extends Activity {
 		}
 
 		Display display = getWindowManager().getDefaultDisplay();
-		//params.setPictureSize(w, h);
-		params.setPictureSize(display.getWidth(), display.getWidth());
+		params.setPictureSize(w, h);
+	//	params.setPictureSize(display.getWidth(), display.getWidth());
 		params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 
 		mCamera.setParameters(params);
