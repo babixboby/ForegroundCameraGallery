@@ -180,21 +180,7 @@ public class CameraActivity extends Activity {
 			ExifInterface exif;
 			try {
 				exif = new ExifInterface(pictureFile.getAbsolutePath());
-				switch (mOrientation) {
-				case ORIENTATION_PORTRAIT_NORMAL:
-					// image.put(Media.ORIENTATION, 90);
-					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_90));
-					break;
-				case ORIENTATION_LANDSCAPE_NORMAL:
-					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL));
-					break;
-				case ORIENTATION_PORTRAIT_INVERTED:
-					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_270));
-					break;
-				case ORIENTATION_LANDSCAPE_INVERTED:
-					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_180));
-					break;
-				}
+				exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_90));
 				exif.saveAttributes();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
