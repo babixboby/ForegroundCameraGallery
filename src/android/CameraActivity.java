@@ -76,20 +76,9 @@ public class CameraActivity extends Activity {
 		}
 
 		final Camera.Parameters params = mCamera.getParameters();
-		List<Camera.Size> sizes = params.getSupportedPictureSizes();
 
-		int w = 0, h = 0;
-		for (Camera.Size s : sizes) {
-			// If larger, take it
-			if (s.width * s.height > w * h) {
-				w = s.width;
-				h = s.height;
-			}
-		}
-
-		Display display = getWindowManager().getDefaultDisplay();
-		params.setPictureSize(w, h);
 		params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+		params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
 		mCamera.setParameters(params);
 
@@ -97,8 +86,6 @@ public class CameraActivity extends Activity {
 		mPreview = new CameraPreview(this, mCamera);
 
 		FrameLayout preview = (FrameLayout) findViewById(getResources().getIdentifier("camera_preview", "id", getPackageName()));
-
-
 		preview.addView(mPreview);
 		
 		// Add a listener to the Capture button
@@ -132,173 +119,17 @@ public class CameraActivity extends Activity {
 				finish();
 			}
 		});
-
-		// Is the toggle on?
-		CompoundButton tb = (CompoundButton) findViewById(getResources().getIdentifier("switch1", "id", getPackageName()));
-		if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-			tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-				// @Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if (isChecked) {
-						params.setFlashMode(Parameters.FLASH_MODE_AUTO);
-						mCamera.setParameters(params);
-					} else {
-						params.setFlashMode(Parameters.FLASH_MODE_OFF);
-						mCamera.setParameters(params);
-					}
-				}
-			});
-		} else {
-			tb.setVisibility(View.GONE);
-		}
-
-		ZoomControls zoomControls = (ZoomControls) findViewById(getResources().getIdentifier("zoomControls1", "id", getPackageName()));
-		if (params.isZoomSupported() && params.isSmoothZoomSupported()) {
-			// most phones
-			maxZoomLevel = params.getMaxZoom();
-
-			zoomControls.setIsZoomInEnabled(true);
-			zoomControls.setIsZoomOutEnabled(true);
-
-			zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if (currentZoomLevel < maxZoomLevel) {
-						currentZoomLevel++;
-						mCamera.startSmoothZoom(currentZoomLevel);
-
-					}
-				}
-			});
-
-			zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if (currentZoomLevel > 0) {
-						currentZoomLevel--;
-						mCamera.startSmoothZoom(currentZoomLevel);
-					}
-				}
-			});
-		} else if (params.isZoomSupported() && !params.isSmoothZoomSupported()) {
-			// stupid HTC phones
-			maxZoomLevel = params.getMaxZoom();
-
-			zoomControls.setIsZoomInEnabled(true);
-			zoomControls.setIsZoomOutEnabled(true);
-
-			zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if (currentZoomLevel < maxZoomLevel) {
-						currentZoomLevel++;
-						params.setZoom(currentZoomLevel);
-						mCamera.setParameters(params);
-
-					}
-				}
-			});
-
-			zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if (currentZoomLevel > 0) {
-						currentZoomLevel--;
-						params.setZoom(currentZoomLevel);
-						mCamera.setParameters(params);
-					}
-				}
-			});
-		} else {
-			// no zoom on phone
-			zoomControls.setVisibility(View.GONE);
-		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		if (mOrientationEventListener == null) {
-			mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
-
-				@Override
-				public void onOrientationChanged(int orientation) {
-
-					// determine our orientation based on sensor response
-					int lastOrientation = mOrientation;
-
-					if (orientation >= 315 || orientation < 45) {
-						if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
-							mOrientation = ORIENTATION_PORTRAIT_NORMAL;
-						}
-					} else if (orientation < 315 && orientation >= 225) {
-						if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
-							mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
-						}
-					} else if (orientation < 225 && orientation >= 135) {
-						if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
-							mOrientation = ORIENTATION_PORTRAIT_INVERTED;
-						}
-					} else { // orientation <135 && orientation > 45
-						if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
-							mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
-						}
-					}
-
-					if (lastOrientation != mOrientation) {
-						changeRotation(mOrientation, lastOrientation);
-					}
-				}
-			};
-		}
-		if (mOrientationEventListener.canDetectOrientation()) {
-			mOrientationEventListener.enable();
-		}
 	}
 
-	/**
-	 * Performs required action to accommodate new orientation
-	 * 
-	 * @param orientation
-	 * @param lastOrientation
-	 */
-	private void changeRotation(int orientation, int lastOrientation) {
-		final Camera.Parameters params = mCamera.getParameters();
-		switch (orientation) {
-		case ORIENTATION_PORTRAIT_NORMAL:
-			// mSnapButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_camera,
-			// 270));
-			// mBackButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_revert,
-			// 270));
-			params.setRotation(90);
-			Log.v("CameraActivity", "Orientation = 90");
-			break;
-		case ORIENTATION_LANDSCAPE_NORMAL:
-			// mSnapButton.setImageResource(android.R.drawable.ic_menu_camera);
-			// mBackButton.setImageResource(android.R.drawable.ic_menu_revert);
-			params.setRotation(0);
-			Log.v("CameraActivity", "Orientation = 0");
-			break;
-		case ORIENTATION_PORTRAIT_INVERTED:
-			// mSnapButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_camera,
-			// 90));
-			// mBackButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_revert,
-			// 90));
-			params.setRotation(270);
-			Log.v("CameraActivity", "Orientation = 270");
-			break;
-		case ORIENTATION_LANDSCAPE_INVERTED:
-			// mSnapButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_camera,
-			// 180));
-			// mBackButton.setImageDrawable(getRotatedImage(android.R.drawable.ic_menu_revert,
-			// 180));
-			params.setRotation(180);
-			Log.v("CameraActivity", "Orientation = 180");
-			break;
-		}
-	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		mOrientationEventListener.disable();
 	}
 
 	@Override
