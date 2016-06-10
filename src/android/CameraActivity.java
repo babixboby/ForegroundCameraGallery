@@ -78,7 +78,6 @@ public class CameraActivity extends Activity {
 		final Camera.Parameters params = mCamera.getParameters();
 
 		params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-		params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
 		mCamera.setParameters(params);
 
