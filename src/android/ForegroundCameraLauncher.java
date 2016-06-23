@@ -113,7 +113,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
             this.targetWidth = 0;
             this.encodingType = JPEG;
             this.mediaType = PICTURE;
-            this.mQuality = 80;
+            this.mQuality = 100;
 
             this.mQuality = args.getInt(0);
             destType = args.getInt(1);
