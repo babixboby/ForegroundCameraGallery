@@ -46,7 +46,7 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
     options = options || {};
     var getValue = argscheck.getValue;
 
-    var quality = getValue(options.quality, 50);
+    var quality = getValue(options.quality, 100);
     var destinationType = getValue(options.destinationType, Camera.DestinationType.FILE_URI);
     var sourceType = getValue(options.sourceType, Camera.PictureSourceType.CAMERA);
     var targetWidth = getValue(options.targetWidth, -1);
