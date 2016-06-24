@@ -107,7 +107,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
 
         if (action.equals("takePicture")) {
        int srcType = CAMERA;
-            int destType = DATA_URL;//FILE_URI;
+            int destType = FILE_URI;
             this.saveToPhotoAlbum = false;
             this.targetHeight = 0;
             this.targetWidth = 0;
