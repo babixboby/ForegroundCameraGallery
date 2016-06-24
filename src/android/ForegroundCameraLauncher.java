@@ -124,7 +124,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
             this.mediaType = args.getInt(6);
             //this.allowEdit = args.getBoolean(7); // This field is unused.
             this.correctOrientation = true;
-            this.saveToPhotoAlbum = args.getBoolean(9);
+            this.saveToPhotoAlbum = true;
 
             // If the user specifies a 0 or smaller width/height
             // make it -1 so later comparisons succeed
