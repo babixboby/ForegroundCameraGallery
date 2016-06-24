@@ -1,7 +1,7 @@
 package com.tuxpan.foregroundcameragalleryplugin;
 
 import java.util.List;
-import java.io.IOException;
+
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -13,124 +13,123 @@ import android.view.SurfaceView;
 
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-private static final String TAG = "CameraPreview";
+	private SurfaceHolder mHolder;
+	private Camera mCamera;
+	private final String TAG = "Preview";
+	private List<Camera.Size> mSupportedPreviewSizes;
+	private Camera.Size mPreviewSize;
 
-    private Context mContext;
-    private SurfaceHolder mHolder;
-    private Camera mCamera;
-    private List<Camera.Size> mSupportedPreviewSizes;
-    private Camera.Size mPreviewSize;
+	public CameraPreview(Context context, Camera camera) {
+		super(context);
+		mCamera = camera;
+		mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+		for (Camera.Size str : mSupportedPreviewSizes)
+			Log.e(TAG, str.width + "/" + str.height);
+		// Install a SurfaceHolder.Callback so we get notified when the
+		// underlying surface is created and destroyed.
+		mHolder = getHolder();
+		mHolder.addCallback(this);
+		// deprecated setting, but required on Android versions prior to 3.0
+		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+	}
 
-    public CameraPreview(Context context, Camera camera) {
-        super(context);
-        mContext = context;
-        mCamera = camera;
+	public void surfaceCreated(SurfaceHolder holder) {
+	}
 
-        // supported preview sizes
-        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
-        for(Camera.Size str: mSupportedPreviewSizes)
-                Log.e(TAG, str.width + "/" + str.height);
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		// empty. Take care of releasing the Camera preview in your activity.
+	}
 
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-        // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-    }
+	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+		// If your preview can change or rotate, take care of those events here.
+		// Make sure to stop the preview before resizing or reformatting it.
+		Log.e(TAG, "surfaceChanged => w=" + w + ", h=" + h);
 
-    public void surfaceCreated(SurfaceHolder holder) {
-        // empty. surfaceChanged will take care of stuff
-    }
+		if (mHolder.getSurface() == null) {
+			// preview surface does not exist
+			return;
+		}
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        // empty. Take care of releasing the Camera preview in your activity.
-    }
+		// stop preview before making changes
+		try {
+			mCamera.stopPreview();
+		} catch (Exception e) {
+			// ignore: tried to stop a non-existent preview
+		}
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        Log.e(TAG, "surfaceChanged => w=" + w + ", h=" + h);
-        // If your preview can change or rotate, take care of those events here.
-        // Make sure to stop the preview before resizing or reformatting it.
-        if (mHolder.getSurface() == null){
-            // preview surface does not exist
-            return;
-        }
+		// set preview size and make any resize, rotate or
+		// reformatting changes here
 
-        // stop preview before making changes
-        try {
-            mCamera.stopPreview();
-        } catch (Exception e){
-            // ignore: tried to stop a non-existent preview
-        }
+		// start preview with new settings
+		try {
+			Camera.Parameters parameters = mCamera.getParameters();
+			parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+			mCamera.setParameters(parameters);
+			mCamera.setDisplayOrientation(90);
+			mCamera.setPreviewDisplay(mHolder);
+			mCamera.startPreview();
 
-        // set preview size and make any resize, rotate or reformatting changes here
-        // start preview with new settings
-        try {
-            Camera.Parameters parameters = mCamera.getParameters();
-            parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-            mCamera.setParameters(parameters);
-            mCamera.setDisplayOrientation(90);
-            mCamera.setPreviewDisplay(mHolder);
-            mCamera.startPreview();
+		} catch (Exception e) {
+			Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+		}
+	}
 
-        } catch (Exception e){
-            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
-        }
-    }
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			mCamera.setDisplayOrientation(180);
+		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+			mCamera.setDisplayOrientation(90);
+		}
+	}
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+        setMeasuredDimension(width, height);
 
         if (mSupportedPreviewSizes != null) {
-            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
+           mPreviewSize = getBestPreviewSize(mSupportedPreviewSizes, width, height);
         }
+	}
 
-        float ratio;
-        if(mPreviewSize.height >= mPreviewSize.width)
-            ratio = (float) mPreviewSize.height / (float) mPreviewSize.width;
-        else
-            ratio = (float) mPreviewSize.width / (float) mPreviewSize.height;
+	private Camera.Size getBestPreviewSize(List<Camera.Size> sizes, int height, int width) {
+		final double ASPECT_TOLERANCE = 0.2;
+		double targetRatio = (double) height / width;
+		if (sizes == null)
+			return null;
 
-        // One of these methods should be used, second method squishes preview slightly
-        setMeasuredDimension(width, (int) (width * ratio));
-//        setMeasuredDimension((int) (width * ratio), height);
-    }
+		Size optimalSize = null;
+		double minDiff = Double.MAX_VALUE;
 
-    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
-        final double ASPECT_TOLERANCE = 0.1;
-        double targetRatio = (double) h / w;
+		int targetHeight = height;
 
-        if (sizes == null)
-            return null;
+		// Try to find an size match aspect ratio and size
+		for (Size size : sizes) {
+			
+			Log.d(TAG, "Checking size " + size.width + "w " + size.height + "h");
+			double ratio = (double) size.width / size.height;
+			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+				continue;
+			if (Math.abs(size.height - targetHeight) < minDiff) {
+				optimalSize = size;
+				minDiff = Math.abs(size.height - targetHeight);
+			}
+		}
 
-        Camera.Size optimalSize = null;
-        double minDiff = Double.MAX_VALUE;
-
-        int targetHeight = h;
-
-        for (Camera.Size size : sizes) {
-            double ratio = (double) size.height / size.width;
-            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
-                continue;
-
-            if (Math.abs(size.height - targetHeight) < minDiff) {
-                optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
-            }
-        }
-
-        if (optimalSize == null) {
-            minDiff = Double.MAX_VALUE;
-            for (Camera.Size size : sizes) {
-                if (Math.abs(size.height - targetHeight) < minDiff) {
-                    optimalSize = size;
-                    minDiff = Math.abs(size.height - targetHeight);
-                }
-            }
-        }
-
-        return optimalSize;
-    }
+		// Cannot find the one match the aspect ratio, ignore the
+		// requirement
+		if (optimalSize == null) {
+			minDiff = Double.MAX_VALUE;
+			for (Size size : sizes) {
+				if (Math.abs(size.height - targetHeight) < minDiff) {
+					optimalSize = size;
+					minDiff = Math.abs(size.height - targetHeight);
+				}
+			}
+		}
+		return optimalSize;
+	}
 }
