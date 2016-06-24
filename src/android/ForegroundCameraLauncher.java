@@ -6,9 +6,7 @@
        to you under the Apache License, Version 2.0 (the
        "License"); you may not use this file except in compliance
        with the License.  You may obtain a copy of the License at
-
          http://www.apache.org/licenses/LICENSE-2.0
-
        Unless required by applicable law or agreed to in writing,
        software distributed under the License is distributed on an
        "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -106,15 +104,15 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
         this.callbackContext = callbackContext;
 
         if (action.equals("takePicture")) {
-       int srcType = CAMERA;
+            int srcType = CAMERA;
             int destType = FILE_URI;
             this.saveToPhotoAlbum = false;
             this.targetHeight = 0;
             this.targetWidth = 0;
             this.encodingType = JPEG;
             this.mediaType = PICTURE;
-            this.mQuality = 100;
-            
+            this.mQuality = 80;
+
             this.mQuality = args.getInt(0);
             destType = args.getInt(1);
             srcType = args.getInt(2);
@@ -124,7 +122,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
             this.mediaType = args.getInt(6);
             //this.allowEdit = args.getBoolean(7); // This field is unused.
             this.correctOrientation = args.getBoolean(8);
-            this.saveToPhotoAlbum = args.getBoolean(9);            
+            this.saveToPhotoAlbum = args.getBoolean(9);
 
             // If the user specifies a 0 or smaller width/height
             // make it -1 so later comparisons succeed
@@ -329,6 +327,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
                     else if (destType == FILE_URI || destType == NATIVE_URI) {
                         if (this.saveToPhotoAlbum) {
                             Uri inputUri = getUriFromMediaStore();
+                            //Just because we have a media URI doesn't mean we have a real file, we need to make it
                             uri = Uri.fromFile(new File(FileHelper.getRealPath(inputUri, this.cordova)));
                         } else {
                             uri = Uri.fromFile(new File(getTempDirectoryPath(), System.currentTimeMillis() + ".jpg"));
@@ -339,7 +338,8 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
                         }
 
                         // If all this is true we shouldn't compress the image.
-                        if (this.targetHeight == -1 && this.targetWidth == -1 && this.mQuality == 100 && !this.correctOrientation) {
+                        if (this.targetHeight == -1 && this.targetWidth == -1 && this.mQuality == 100 &&
+                                !this.correctOrientation) {
                             writeUncompressedImage(uri);
 
                             this.callbackContext.success(uri.toString());
@@ -352,7 +352,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
 
                             // Add compressed version of captured image to returned media store Uri
                             OutputStream os = this.cordova.getActivity().getContentResolver().openOutputStream(uri);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, this.mQuality, os);
                             os.close();
 
                             // Restore exif data to file
