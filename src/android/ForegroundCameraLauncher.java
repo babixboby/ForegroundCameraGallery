@@ -344,7 +344,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
 
                             this.callbackContext.success(uri.toString());
                         } else {
-                            //bitmap = getScaledBitmap(FileHelper.stripFileProtocol(imageUri.toString()));
+                            bitmap = getScaledBitmap(FileHelper.stripFileProtocol(imageUri.toString()));
 
                             if (rotate != 0 && this.correctOrientation) {
                             //    bitmap = getRotatedBitmap(rotate, bitmap, exif);
