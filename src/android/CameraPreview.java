@@ -74,16 +74,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }else{
 		List<Camera.Size> sizes = parameters.getSupportedPictureSizes();
 
-		int w = 0, h = 0;
+		int wz = 0, hz = 0;
 		for (Camera.Size s : sizes) {
 			// If larger, take it
-			if (s.width * s.height > w * h) {
-				w = s.width;
-				h = s.height;
+			if (s.width * s.height > wz * hz) {
+				wz = s.width;
+				hz = s.height;
 			}
 		}
 
-		parameters.setPictureSize(w, h);            	
+		parameters.setPictureSize(wz, hz);            	
             }
             mCamera.setParameters(parameters);
             mCamera.setDisplayOrientation(90);
