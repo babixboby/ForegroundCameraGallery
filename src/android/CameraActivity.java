@@ -1,12 +1,9 @@
 /*
 	    Copyright 2012 Bruno Carreira - Lucas Farias - Rafael Luna - Vin�cius Fonseca.
-
 		Licensed under the Apache License, Version 2.0 (the "License");
 		you may not use this file except in compliance with the License.
 		You may obtain a copy of the License at
-
 		http://www.apache.org/licenses/LICENSE-2.0
-
 		Unless required by applicable law or agreed to in writing, software
 		distributed under the License is distributed on an "AS IS" BASIS,
 		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,10 +36,9 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.FrameLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.ZoomControls;
-import android.view.Display;
+
 /**
  * Camera Activity Class. Configures Android camera to take picture and show it.
  */
@@ -76,7 +72,18 @@ public class CameraActivity extends Activity {
 		}
 
 		final Camera.Parameters params = mCamera.getParameters();
+		List<Camera.Size> sizes = params.getSupportedPictureSizes();
 
+		int w = 0, h = 0;
+		for (Camera.Size s : sizes) {
+			// If larger, take it
+			if (s.width * s.height > w * h) {
+				w = s.width;
+				h = s.height;
+			}
+		}
+
+		params.setPictureSize(w, h);
 		params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 
 		mCamera.setParameters(params);
@@ -118,12 +125,89 @@ public class CameraActivity extends Activity {
 				finish();
 			}
 		});
+
+		// Is the toggle on?
+		CompoundButton tb = (CompoundButton) findViewById(getResources().getIdentifier("switch1", "id", getPackageName()));
+		if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+			tb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				// @Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if (isChecked) {
+						params.setFlashMode(Parameters.FLASH_MODE_AUTO);
+						mCamera.setParameters(params);
+					} else {
+						params.setFlashMode(Parameters.FLASH_MODE_OFF);
+						mCamera.setParameters(params);
+					}
+				}
+			});
+		} else {
+			tb.setVisibility(View.GONE);
+		}
+
+		ZoomControls zoomControls = (ZoomControls) findViewById(getResources().getIdentifier("zoomControls1", "id", getPackageName()));
+		if (params.isZoomSupported() && params.isSmoothZoomSupported()) {
+			// most phones
+			maxZoomLevel = params.getMaxZoom();
+
+			zoomControls.setIsZoomInEnabled(true);
+			zoomControls.setIsZoomOutEnabled(true);
+
+			zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if (currentZoomLevel < maxZoomLevel) {
+						currentZoomLevel++;
+						mCamera.startSmoothZoom(currentZoomLevel);
+
+					}
+				}
+			});
+
+			zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if (currentZoomLevel > 0) {
+						currentZoomLevel--;
+						mCamera.startSmoothZoom(currentZoomLevel);
+					}
+				}
+			});
+		} else if (params.isZoomSupported() && !params.isSmoothZoomSupported()) {
+			// stupid HTC phones
+			maxZoomLevel = params.getMaxZoom();
+
+			zoomControls.setIsZoomInEnabled(true);
+			zoomControls.setIsZoomOutEnabled(true);
+
+			zoomControls.setOnZoomInClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if (currentZoomLevel < maxZoomLevel) {
+						currentZoomLevel++;
+						params.setZoom(currentZoomLevel);
+						mCamera.setParameters(params);
+
+					}
+				}
+			});
+
+			zoomControls.setOnZoomOutClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if (currentZoomLevel > 0) {
+						currentZoomLevel--;
+						params.setZoom(currentZoomLevel);
+						mCamera.setParameters(params);
+					}
+				}
+			});
+		} else {
+			// no zoom on phone
+			zoomControls.setVisibility(View.GONE);
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		if (mOrientationEventListener == null) {
 			mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
 
@@ -162,40 +246,7 @@ public class CameraActivity extends Activity {
 		}
 	}
 
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		mOrientationEventListener.disable();
-	}
-
-	@Override
-	protected void onDestroy() {
-		if (mCamera != null) {
-			try {
-				mCamera.stopPreview();
-				mCamera.setPreviewCallback(null);
-			} catch (Exception e) {
-				Log.d(TAG, "Exception stopping camera: " + e.getMessage());
-			}
-			mCamera.release(); // release the camera for other applications
-			mCamera = null;
-		}
-		super.onDestroy();
-	}
-
-	/** A safe way to get an instance of the Camera object. */
-	public static Camera getCameraInstance() {
-		Camera c = null;
-		try {
-			c = Camera.open(); // attempt to get a Camera instance
-		} catch (Exception e) {
-			// Camera is not available (in use or does not exist)
-			Log.d(TAG, "Camera not available: " + e.getMessage());
-		}
-		return c; // returns null if camera is unavailable
-	}
-/**
+	/**
 	 * Performs required action to accommodate new orientation
 	 * 
 	 * @param orientation
@@ -236,6 +287,40 @@ public class CameraActivity extends Activity {
 			break;
 		}
 	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mOrientationEventListener.disable();
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (mCamera != null) {
+			try {
+				mCamera.stopPreview();
+				mCamera.setPreviewCallback(null);
+			} catch (Exception e) {
+				Log.d(TAG, "Exception stopping camera: " + e.getMessage());
+			}
+			mCamera.release(); // release the camera for other applications
+			mCamera = null;
+		}
+		super.onDestroy();
+	}
+
+	/** A safe way to get an instance of the Camera object. */
+	public static Camera getCameraInstance() {
+		Camera c = null;
+		try {
+			c = Camera.open(); // attempt to get a Camera instance
+		} catch (Exception e) {
+			// Camera is not available (in use or does not exist)
+			Log.d(TAG, "Camera not available: " + e.getMessage());
+		}
+		return c; // returns null if camera is unavailable
+	}
+
 	private PictureCallback mPicture = new PictureCallback() {
 
 		public void onPictureTaken(byte[] data, Camera camera) {
@@ -272,8 +357,7 @@ public class CameraActivity extends Activity {
 					exif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_ROTATE_180));
 					break;
 				}
-				exif.saveAttributes();			
-				
+				exif.saveAttributes();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
