@@ -344,15 +344,15 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
 
                             this.callbackContext.success(uri.toString());
                         } else {
-                            bitmap = getScaledBitmap(FileHelper.stripFileProtocol(imageUri.toString()));
+                            //bitmap = getScaledBitmap(FileHelper.stripFileProtocol(imageUri.toString()));
 
                             if (rotate != 0 && this.correctOrientation) {
-                                bitmap = getRotatedBitmap(rotate, bitmap, exif);
+                            //    bitmap = getRotatedBitmap(rotate, bitmap, exif);
                             }
 
                             // Add compressed version of captured image to returned media store Uri
                             OutputStream os = this.cordova.getActivity().getContentResolver().openOutputStream(uri);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, this.mQuality, os);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                             os.close();
 
                             // Restore exif data to file
