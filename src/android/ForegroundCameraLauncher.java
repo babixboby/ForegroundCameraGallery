@@ -123,8 +123,8 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
             this.encodingType = args.getInt(5);
             this.mediaType = args.getInt(6);
             //this.allowEdit = args.getBoolean(7); // This field is unused.
-            this.correctOrientation = false;
-            this.saveToPhotoAlbum = true;
+            this.correctOrientation = true;
+            this.saveToPhotoAlbum = false;
 
             // If the user specifies a 0 or smaller width/height
             // make it -1 so later comparisons succeed
@@ -327,25 +327,23 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
 
                     // If sending filename back
                     else if (destType == FILE_URI || destType == NATIVE_URI) {
-                        if (this.saveToPhotoAlbum) {
-                            Uri inputUri = getUriFromMediaStore();
-                            //Just because we have a media URI doesn't mean we have a real file, we need to make it
-                            uri = Uri.fromFile(new File(FileHelper.getRealPath(inputUri, this.cordova)));
-                        } else {
+                       // if (this.saveToPhotoAlbum) {
+                       //     Uri inputUri = getUriFromMediaStore();
+                       //     uri = Uri.fromFile(new File(FileHelper.getRealPath(inputUri, this.cordova)));
+                       // } else {
                             uri = Uri.fromFile(new File(getTempDirectoryPath(), System.currentTimeMillis() + ".jpg"));
-                        }
+                      //  }
 
                         if (uri == null) {
                             this.failPicture("Error capturing image - no media storage found.");
                         }
 
                         // If all this is true we shouldn't compress the image.
-                        if (this.targetHeight == -1 && this.targetWidth == -1 && this.mQuality == 100 &&
-                                !this.correctOrientation) {
+                        //if (this.targetHeight == -1 && this.targetWidth == -1 && this.mQuality == 100 && !this.correctOrientation) {
                             writeUncompressedImage(uri);
 
-                            this.callbackContext.success(uri.toString());
-                        } else {
+                           // this.callbackContext.success(uri.toString());
+                       /* } else {
                             bitmap = getScaledBitmap(FileHelper.stripFileProtocol(imageUri.toString()));
 
                             if (rotate != 0 && this.correctOrientation) {
@@ -369,7 +367,7 @@ public class ForegroundCameraLauncher extends CordovaPlugin implements MediaScan
                                 exif.writeExifData();
                             }
 
-                        }
+                        }*/
                         // Send Uri back to JavaScript for viewing image
                         this.callbackContext.success(uri.toString());
                     }
